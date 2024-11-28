@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws_access_key')    // AWS Access Key from Jenkins credentials
-        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key') // AWS Secret Key from Jenkins credentials
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')    // Jenkins credentials ID for AWS Access Key
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_KEY') // Jenkins credentials ID for AWS Secret Key
         AWS_REGION = 'us-east-1'                             // Specify your AWS region
         TERRAFORM_DIR = 'terraform'                          // Path to your Terraform configuration
     }
@@ -62,4 +62,25 @@ pipeline {
 
         stage('Post-Provisioning') {
             steps {
-                echo 'Post-provisioning tasks (if
+                echo '''
+                Post-provisioning tasks (if required):
+                - Configure additional settings
+                - Notify team
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs() // Cleans the workspace after the job completes
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}
